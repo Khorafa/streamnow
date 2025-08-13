@@ -1,0 +1,104 @@
+===================================================================
+==                                                               ==
+==          SIMULATION PROJECT: ANALYSIS FOR STREAMNOW            ==
+==                                                               ==
+==                       EXECUTION INSTRUCTIONS                   ==
+==                                                               ==
+===================================================================
+
+// OVERVIEW
+// --------
+// This project simulates the StreamNow network to determine the necessary
+// bandwidth for its main link, ensuring QoS.
+// The system is automated by a main script that launches
+// the simulations and generates the final results.
+
+
+// FILES
+// --------
+// * run.sh          -> Bash script that orchestrates everything. In it,
+//                      you can modify the user and bitrate ranges,
+//                      the steps used, the number of simulations per
+//                      sample, etc.
+//
+// * onoffRouting.cc -> ns-3 code that contains the network model and
+//                      runs each individual simulation.
+//
+// * plot-results.cc -> ns-3 code that reads the raw data and
+//                      creates the plots with Gnuplot.
+
+
+// EXECUTION
+// ---------
+
+    +---------------------------------------------------------------+
+    |                    !! IMPORTANT NOTICES !!                   |
+    +---------------------------------------------------------------+
+
+* SIMULATION TIME: The script runs 10 simulations per sample by
+    default to obtain robust results (880 simulations in total).
+    This may be too long if you just want a quick look at the results,
+    so we recommend modifying the value of N by editing run.sh or
+    using the -n option.
+
+* 450/500 USERS RESULTS: The final plot will not show points for
+    these values if the default configuration is used. This is not
+    an error; it is an expected result. We recommend reading the
+    results analysis and conclusions section of the report to
+    understand it.
+
+
+// STEPS
+// -----
+// 1. PREPARATION:
+//    Copy the 3 files into the 'scratch/' directory of your ns-3 installation.
+
+// 2. COMPILATION:
+//    $ cd /path/to/your/ns-allinone-3.42/ns-3.42
+//    $ ./ns3 clean && ./ns3 configure --build-profile=optimized && ./ns3 build
+
+// 3. EXECUTION:
+//    Once compiled, launch the script:
+//    $ chmod +x scratch/run.sh
+//    $ ./scratch/run.sh
+
+// Script options (can also be changed by editing the script):
+//    -u <max_users>      -> Defines the maximum number of users (default 500)
+//    -b <max_bitrate>    -> Defines the maximum bitrate to test (default 120)
+//    -n <n_simulations> -> Defines how many simulations are run per sample (default 10)
+//    --log               -> Enables detailed simulation debug logs.
+
+
+// DEBUG MODE (LOGS)
+// -------------------------
+// To enable debug mode, add the --log option when running the script:
+//    $ ./scratch/run.sh --log
+
+// When using this option, detailed logs about the internal behavior of the
+// simulation will be displayed, including:
+//    * Input parameters for each run.
+//    * IP addresses assigned to each device.
+//    * Creation of traffic applications.
+//    * RIP protocol routing tables at 11 seconds.
+//    * Final summary of each execution.
+
+// !! NOTICE: The console output will be very extensive. We recommend
+// redirecting the output to a text file for later analysis:
+//    $ ./scratch/run.sh --log > log_output.txt 2>&1
+
+
+// RESULTS
+// ----------
+// The results will be saved in the ns-3 root directory:
+//
+// * results.dat           -> File with the raw data from each simulation.
+//
+// * sim_precision.dat     -> Table with the processed statistical results
+//                            (averages and confidence intervals).
+//
+// * 'graficas/' Directory -> Contains the performance plots and the
+//                            final results plot.
+//
+// * 'graficas-precision/' Directory -> Contains the plots with the statistical
+//                                      margin of error. (only valid with n=10,
+//					 which is the case study)

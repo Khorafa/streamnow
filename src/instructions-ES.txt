@@ -1,0 +1,104 @@
+===================================================================
+==                                                               ==
+==           PROYECTO DE SIMULACION: ANÁLISIS PARA STREAMNOW     ==
+==                                                               ==
+==                     INSTRUCCIONES DE EJECUCION                ==
+==                                                               ==
+===================================================================
+
+// OVERVIEW
+// --------
+// Este proyecto simula la red de StreamNow para determinar el ancho de
+// banda necesario en su enlace principal, garantizando la QoS.
+// El sistema está automatizado mediante un script principal que lanza
+// las simulaciones y genera los resultados finales.
+
+
+// FICHEROS
+// --------
+// * run.sh          -> Script bash que orquesta todo. En él se pueden
+//                      modificar los rangos de usuarios y bitrates,
+//                      los steps usados, el número de simulaciones por
+//                      muestras, etc.
+//
+// * onoffRouting.cc -> Código ns-3 que contiene el modelo de la red y
+//                      ejecuta cada simulación individual.
+//
+// * plot-results.cc -> Código ns-3 que lee los datos crudos y
+//                      crea las gráficas con Gnuplot.
+
+
+// EJECUCION
+// ---------
+
+    +---------------------------------------------------------------+
+    |                      !! AVISOS IMPORTANTES !!                 |
+    +---------------------------------------------------------------+
+
+* TIEMPO DE SIMULACION: El script ejecuta por defecto 10 simulaciones
+    por muestra para obtener resultados robustos (en total 880
+    simulaciones). Esto puede ser demasiado si solo se quiere un
+    vistazo a los resultados, por lo que recomendamos modificar el
+    valor de N editando run.sh o usando la opción -n.
+
+* RESULTADOS 450/500 USUARIOS: La gráfica final no mostrará puntos
+    para estos valores si se usa la configuración por defecto. Esto no
+    es un error, es un resultado esperado. Recomendamos que se lea el
+    apartado de análisis de resultados y conclusiones de la memoria
+    para poder entenderlo.
+
+
+// PASOS
+// -----
+// 1. PREPARACION:
+//    Copia los 3 ficheros en el directorio 'scratch/' de tu instalación de ns-3.
+
+// 2. COMPILACION:
+//    $ cd /ruta/a/tu/ns-allinone-3.42/ns-3.42
+//    $ ./ns3 clean && ./ns3 configure --build-profile=optimized && ./ns3 build
+
+// 3. EJECUCION:
+//    Una vez compilado, lanza el script:
+//    $ chmod +x scratch/run.sh
+//    $ ./scratch/run.sh
+
+// Opciones del script (también se pueden cambiar editando el script):
+//    -u <max_users>      -> Define el número máximo de usuarios (por defecto 500)
+//    -b <max_bitrate>    -> Define el bitrate máximo a probar (por defecto 120)
+//    -n <n_simulaciones> -> Define cuántas simulaciones se hacen por muestra (por defecto 10)
+//    --log               -> Activa los logs de depuración detallados de la simulación.
+
+
+// MODO DE DEPURACIÓN (LOGS)
+// -------------------------
+// Para activar el modo de depuración, añade la opción --log al ejecutar el script:
+//    $ ./scratch/run.sh --log
+
+// Al usar esta opción, se mostrarán logs detallados sobre el comportamiento
+// interno de la simulación, incluyendo:
+//    * Parámetros de entrada de cada réplica.
+//    * Direcciones IP asignadas a cada dispositivo.
+//    * Creación de las aplicaciones de tráfico.
+//    * Tablas de enrutamiento del protocolo RIP a los 11 segundos.
+//    * Resumen final de cada ejecución.
+
+// !! AVISO: La salida en la consola será muy extensa. Te recomendamos
+// redirigir la salida a un fichero de texto para analizarla posteriormente:
+//    $ ./scratch/run.sh --log > salida_logs.txt 2>&1
+
+
+// RESULTADOS
+// ----------
+// Los resultados se guardarán en el directorio raíz de ns-3:
+//
+// * results.dat           -> Fichero con los datos en crudo de cada simulación.
+//
+// * sim_precision.dat     -> Tabla con los resultados estadísticos procesados
+//                            (medias e intervalos de confianza).
+//
+// * Directorio 'graficas/' -> Contiene las gráficas de rendimiento y la
+//                            gráfica final de resultados.
+//
+// * Directorio 'graficas-precision/' -> Contiene las gráficas con el margen de
+//                                       error estadístico. (solo validos con n=10
+//					 que es el caso de estudio)
